@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,7 +19,22 @@ final class ServerConfigWriter {
 
     private static final Pattern VALID_SETTING_KEY = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
 
+    static final Map<String, String> DEFAULT_SERVER_SETTINGS =
+            Collections.unmodifiableMap(new HashMap<String, String>());
+
     private ServerConfigWriter() {
+    }
+
+    /**
+     * Returns a new map containing all default server settings overlaid with
+     * user-supplied values. If {@code user} is null, returns a copy of the defaults.
+     */
+    static Map<String, String> mergeSettings(Map<String, String> user) {
+        Map<String, String> merged = new HashMap<String, String>(DEFAULT_SERVER_SETTINGS);
+        if (user != null) {
+            merged.putAll(user);
+        }
+        return merged;
     }
 
     /**
@@ -62,8 +79,6 @@ final class ServerConfigWriter {
         xml.append("    <user_files_path>").append(xmlEscape(userFilesDir)).append("/</user_files_path>\n");
         xml.append("    <format_schema_path>").append(xmlEscape(formatSchemaDir)).append("/</format_schema_path>\n");
         xml.append("\n");
-        xml.append("    <max_server_memory_usage>1073741824</max_server_memory_usage>\n");
-        xml.append("\n");
         xml.append("    <users>\n");
         xml.append("        <default>\n");
         xml.append("            <password></password>\n");
@@ -85,12 +100,11 @@ final class ServerConfigWriter {
         xml.append("        <default/>\n");
         xml.append("    </quotas>\n");
 
-        if (settings != null) {
-            for (Map.Entry<String, String> entry : settings.entrySet()) {
-                xml.append("    <").append(entry.getKey()).append(">");
-                xml.append(xmlEscape(entry.getValue()));
-                xml.append("</").append(entry.getKey()).append(">\n");
-            }
+        Map<String, String> merged = mergeSettings(settings);
+        for (Map.Entry<String, String> entry : merged.entrySet()) {
+            xml.append("    <").append(entry.getKey()).append(">");
+            xml.append(xmlEscape(entry.getValue()));
+            xml.append("</").append(entry.getKey()).append(">\n");
         }
 
         xml.append("</clickhouse>\n");
