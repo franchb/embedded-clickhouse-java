@@ -3,7 +3,7 @@ commons-compress = "1.27.1"
 slf4j = "2.0.17"
 junit4 = "4.13.2"
 junit5 = "5.11.4"
-mockito = "4.11.0"
+mockito = "5.21.0"
 assertj = "3.27.7"
 spring-boot = "3.4.5"
 
