@@ -1,5 +1,5 @@
 plugins {
-    id("java8-conventions")
+    id("java17-conventions")
 }
 
 description = "Spring Boot auto-configuration for embedded ClickHouse"
@@ -7,7 +7,7 @@ description = "Spring Boot auto-configuration for embedded ClickHouse"
 dependencies {
     api(project(":embedded-clickhouse"))
     implementation(libs.spring.boot.autoconfigure)
-    implementation(libs.javax.annotation.api)
+    implementation(libs.jakarta.annotation.api)
 
     testImplementation(libs.spring.boot.test)
     testImplementation(libs.junit.jupiter.api)

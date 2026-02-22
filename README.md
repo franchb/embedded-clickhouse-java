@@ -22,9 +22,9 @@ ClickHouse ships as a single self-contained binary. This library downloads it, v
 | Module | Artifact | Description |
 |--------|----------|-------------|
 | `embedded-clickhouse` | Core | Server lifecycle, download, config (Java 8+) |
-| `embedded-clickhouse-junit5` | JUnit 5 | `@EmbeddedClickHouseTest` annotation + parameter injection |
-| `embedded-clickhouse-junit4` | JUnit 4 | `ClickHouseRule` for `@ClassRule` usage |
-| `embedded-clickhouse-spring-boot` | Spring Boot | Auto-configuration via `embedded.clickhouse.*` properties |
+| `embedded-clickhouse-junit5` | JUnit 5 | `@EmbeddedClickHouseTest` annotation + parameter injection (Java 8+) |
+| `embedded-clickhouse-junit4` | JUnit 4 | `ClickHouseRule` for `@ClassRule` usage (Java 8+) |
+| `embedded-clickhouse-spring-boot` | Spring Boot 3 | Auto-configuration via `embedded.clickhouse.*` properties (Java 17+) |
 | `embedded-clickhouse-bom` | BOM | Version-aligned dependency management |
 
 ## Quick start
@@ -204,7 +204,8 @@ The downloaded ClickHouse binary (~200 MB for Linux, ~130 MB for macOS) is cache
 
 ## Requirements
 
-- Java 8+ (compiled to Java 8 bytecode)
+- Core, JUnit 4, JUnit 5: Java 8+
+- Spring Boot: Java 17+
 - Linux or macOS (amd64 or arm64)
 
 ## License

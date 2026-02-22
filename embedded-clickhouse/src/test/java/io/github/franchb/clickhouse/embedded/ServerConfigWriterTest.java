@@ -33,7 +33,7 @@ class ServerConfigWriterTest {
         assertThat(xml).contains("<http_port>18123</http_port>");
         assertThat(xml).contains("<max_threads>4</max_threads>");
         assertThat(xml).contains("<password></password>");
-        assertThat(xml).contains("<max_server_memory_usage>1073741824</max_server_memory_usage>");
+        assertThat(xml).doesNotContain("max_server_memory_usage");
     }
 
     @Test
@@ -64,6 +64,50 @@ class ServerConfigWriterTest {
         assertThatThrownBy(() -> ServerConfigWriter.writeServerConfig(
                 tempDir.toString(), 9000, 8123, settings))
                 .isInstanceOf(InvalidSettingKeyException.class);
+    }
+
+    @Test
+    void writeServerConfig_overrideMaxMemory(@TempDir Path tempDir) throws IOException {
+        Map<String, String> settings = new HashMap<String, String>();
+        settings.put("max_server_memory_usage", "2147483648");
+
+        String configPath = ServerConfigWriter.writeServerConfig(
+                tempDir.toString(), 19000, 18123, settings);
+
+        String xml = new String(Files.readAllBytes(Paths.get(configPath)), StandardCharsets.UTF_8);
+
+        assertThat(xml).contains("<max_server_memory_usage>2147483648</max_server_memory_usage>");
+        // The opening tag appears exactly once.
+        int first = xml.indexOf("<max_server_memory_usage>");
+        assertThat(first).isGreaterThanOrEqualTo(0);
+        assertThat(xml.indexOf("<max_server_memory_usage>", first + 1)).isEqualTo(-1);
+    }
+
+    @Test
+    void mergeSettings_nullReturnsDefaults() {
+        Map<String, String> result = ServerConfigWriter.mergeSettings(null);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void mergeSettings_userValuesPassThrough() {
+        Map<String, String> user = new HashMap<String, String>();
+        user.put("max_threads", "4");
+
+        Map<String, String> result = ServerConfigWriter.mergeSettings(user);
+        assertThat(result).containsEntry("max_threads", "4");
+    }
+
+    @Test
+    void mergeSettings_additiveKeysPreserved() {
+        Map<String, String> user = new HashMap<String, String>();
+        user.put("max_threads", "4");
+        user.put("max_memory_usage", "1000000");
+
+        Map<String, String> result = ServerConfigWriter.mergeSettings(user);
+        assertThat(result).hasSize(2);
+        assertThat(result).containsEntry("max_threads", "4");
+        assertThat(result).containsEntry("max_memory_usage", "1000000");
     }
 
     @Test

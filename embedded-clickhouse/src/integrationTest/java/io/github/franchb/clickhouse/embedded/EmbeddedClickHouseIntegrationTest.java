@@ -92,7 +92,7 @@ class EmbeddedClickHouseIntegrationTest {
                 Config.defaultConfig()
                         .startTimeout(Duration.ofSeconds(60))
                         .settings(java.util.Collections.singletonMap(
-                                "max_server_memory_usage", "536870912"))
+                                "max_concurrent_queries", "50"))
                         .logger(new ByteArrayOutputStream()));
 
         server.start();
