@@ -29,13 +29,13 @@ jobs:
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+        uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
 
       - name: Compile
         run: ./gradlew assemble
 
       - name: Check Gradle wrapper
-        uses: gradle/actions/wrapper-validation@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+        uses: gradle/actions/wrapper-validation@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
 
   test:
     name: Test (${{ matrix.os }})
@@ -60,7 +60,7 @@ jobs:
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+        uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
 
       - name: Run unit tests
         run: ./gradlew test
@@ -96,7 +96,7 @@ jobs:
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+        uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
 
       - name: Cache ClickHouse binary
         uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
