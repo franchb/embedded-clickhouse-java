@@ -25,6 +25,11 @@ tasks.withType<Test>().configureEach {
     }
 }
 
+// Gradle 9+ requires explicit junit-platform-launcher dependency.
+dependencies {
+    "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+}
+
 // Integration test source set
 sourceSets {
     create("integrationTest") {
