@@ -1,5 +1,5 @@
 [versions]
-commons-compress = "1.27.1"
+commons-compress = "1.28.0"
 slf4j = "2.0.17"
 junit4 = "4.13.2"
 junit5 = "5.11.4"
