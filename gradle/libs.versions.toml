@@ -2,7 +2,7 @@
 commons-compress = "1.27.1"
 slf4j = "1.7.36"
 junit4 = "4.13.2"
-junit5 = "5.11.4"
+junit5 = "6.0.3"
 mockito = "4.11.0"
 assertj = "3.26.3"
 spring-boot = "2.7.18"
