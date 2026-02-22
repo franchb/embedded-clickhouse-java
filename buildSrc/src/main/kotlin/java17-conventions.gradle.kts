@@ -2,8 +2,6 @@ plugins {
     id("java-library-conventions")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(17)
 }

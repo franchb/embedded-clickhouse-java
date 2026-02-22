@@ -50,13 +50,10 @@ class HealthCheckerTest {
 
     @Test
     void waitForReady_delayedStart() throws IOException {
+        // Create server with handler but don't start yet — port is bound but not accepting.
         HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         int port = server.getAddress().getPort();
-        server.stop(0); // Close immediately so nothing is listening yet.
-
-        // Start serving after a delay.
-        HttpServer delayedServer = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
-        delayedServer.createContext("/ping", exchange -> {
+        server.createContext("/ping", exchange -> {
             byte[] response = "Ok.\n".getBytes();
             exchange.sendResponseHeaders(200, response.length);
             try (OutputStream os = exchange.getResponseBody()) {
@@ -64,15 +61,16 @@ class HealthCheckerTest {
             }
         });
 
+        // Start accepting connections after a delay.
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.schedule(() -> delayedServer.start(), 200, TimeUnit.MILLISECONDS);
+        scheduler.schedule(() -> server.start(), 200, TimeUnit.MILLISECONDS);
 
         try {
             assertThatCode(() ->
                     HealthChecker.waitForReady(port, Duration.ofSeconds(5), null))
                     .doesNotThrowAnyException();
         } finally {
-            delayedServer.stop(0);
+            server.stop(0);
             scheduler.shutdown();
         }
     }
