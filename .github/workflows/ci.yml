@@ -26,13 +26,48 @@ jobs:
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
-          java-version: 21
+          java-version: |
+            8
+            17
+            21
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
 
       - name: Compile
         run: ./gradlew assemble
+
+      - name: Verify bytecode versions
+        run: |
+          verify_bytecode() {
+            local module="$1"
+            local expected="$2"
+            local label="$3"
+            local dir="$module/build/classes/java/main"
+            if [ ! -d "$dir" ]; then
+              echo "SKIP $module (no classes)"
+              return 0
+            fi
+            local bad=0
+            while IFS= read -r -d '' classfile; do
+              major=$(javap -verbose "$classfile" 2>/dev/null | grep 'major version' | awk '{print $NF}')
+              if [ -n "$major" ] && [ "$major" -ne "$expected" ]; then
+                echo "FAIL $classfile: major=$major expected=$expected ($label)"
+                bad=1
+              fi
+            done < <(find "$dir" -name '*.class' -print0)
+            if [ "$bad" -eq 0 ]; then
+              echo "OK   $module — all classes are $label (major version $expected)"
+            fi
+            return $bad
+          }
+
+          failed=0
+          verify_bytecode embedded-clickhouse           52 "Java 8"  || failed=1
+          verify_bytecode embedded-clickhouse-junit4     52 "Java 8"  || failed=1
+          verify_bytecode embedded-clickhouse-junit5     52 "Java 8"  || failed=1
+          verify_bytecode embedded-clickhouse-spring-boot 61 "Java 17" || failed=1
+          exit $failed
 
       - name: Check Gradle wrapper
         uses: gradle/actions/wrapper-validation@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
@@ -57,7 +92,10 @@ jobs:
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
-          java-version: 21
+          java-version: |
+            8
+            17
+            21
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
@@ -93,7 +131,10 @@ jobs:
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
-          java-version: 21
+          java-version: |
+            8
+            17
+            21
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
