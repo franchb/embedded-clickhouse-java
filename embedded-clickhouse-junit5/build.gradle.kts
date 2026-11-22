@@ -1,5 +1,5 @@
 plugins {
-    id("java8-conventions")
+    id("java-library-conventions")
 }
 
 description = "JUnit 5 Extension for embedded ClickHouse"

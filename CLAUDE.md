@@ -17,35 +17,18 @@ Downloads, caches, and manages a real ClickHouse server process for Java tests.
 
 | Module | Purpose |
 |---|---|
-| `embedded-clickhouse` | Core library (Java 8 bytecode) |
+| `embedded-clickhouse` | Core library |
 | `embedded-clickhouse-junit4` | JUnit 4 `@Rule` |
-| `embedded-clickhouse-junit5` | JUnit 5 `@ExtendWith` |
-| `embedded-clickhouse-spring-boot` | Spring Boot auto-configuration |
+| `embedded-clickhouse-junit5` | JUnit Jupiter (JUnit 6) `@ExtendWith` |
+| `embedded-clickhouse-spring-boot` | Spring Boot 4 auto-configuration |
 | `embedded-clickhouse-bom` | BOM for version alignment |
 
-## Java 8 constraints (core module)
+## Java baseline
 
-The core module targets Java 8 bytecode via Gradle toolchains (`--release 8`).
-
-### Forbidden (Java 9+)
-
-| Forbidden | Use instead |
-|---|---|
-| `HttpClient` (java.net.http) | `HttpURLConnection` |
-| `ProcessHandle` | `Process.destroy()` + `destroyForcibly()` |
-| `var` | explicit types |
-| records, sealed classes | regular classes |
-| text blocks (`"""`) | string concatenation or `StringBuilder` |
-| `Map.of()` with >10 entries | `Collections.unmodifiableMap(new HashMap<>(...))` |
-| `List.of()`, `Set.of()` | `Collections.unmodifiableList(Arrays.asList(...))` |
-| `InputStream.readAllBytes()` | read loop with `byte[]` buffer |
-| `Files.readString()` | `new String(Files.readAllBytes(...), StandardCharsets.UTF_8)` |
-| `String.isBlank()` | `str.trim().isEmpty()` |
-
-### Allowed Java 8 features
-
-Lambdas, streams, `Optional`, `CompletableFuture`, `java.time.*`,
-try-with-resources, diamond operator, method references.
+All modules compile with a Java 25 toolchain (`--release 25`), configured in
+`buildSrc/src/main/kotlin/java-library-conventions.gradle.kts`. Gradle provisions
+the JDK via the foojay toolchain resolver if it is not installed locally.
+Modern Java APIs and language features are allowed.
 
 ## Go → Java translation map
 
