@@ -6,12 +6,16 @@ group = "io.github.franchb"
 version = rootProject.version
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
     withJavadocJar()
     withSourcesJar()
 }
 
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
+    options.release.set(25)
 }
 
 tasks.withType<Javadoc>().configureEach {

@@ -1,5 +1,5 @@
 plugins {
-    id("java8-conventions")
+    id("java-library-conventions")
 }
 
 description = "Embedded ClickHouse server for Java — download, start, stop ClickHouse in tests"

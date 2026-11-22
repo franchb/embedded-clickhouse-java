@@ -1,5 +1,5 @@
 plugins {
-    id("java17-conventions")
+    id("java-library-conventions")
 }
 
 description = "Spring Boot auto-configuration for embedded ClickHouse"

@@ -1,5 +1,5 @@
 plugins {
-    id("java8-conventions")
+    id("java-library-conventions")
 }
 
 description = "JUnit 4 Rule for embedded ClickHouse"
